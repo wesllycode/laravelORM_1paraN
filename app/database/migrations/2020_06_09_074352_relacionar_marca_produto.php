@@ -13,7 +13,11 @@ class RelacionarMarcaProduto extends Migration
      */
     public function up()
     {
-        //
+        // Aqui vou relacionar tabela produto com a tabela marca
+        Schema::table('produtos', function (Blueprint $table){
+            $table->integer('marca_id')->unsigned();
+            $table->foreign('marca_id')->references('id')->on('marcas');
+        });
     }
 
     /**
