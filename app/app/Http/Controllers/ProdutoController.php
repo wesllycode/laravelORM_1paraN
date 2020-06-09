@@ -23,7 +23,8 @@ class ProdutoController extends Controller
      */
     public function create()
     {
-        //
+        $marcas = Marca::all();
+        return view('produtos.create', compact('marcas'));
     }
 
     /**
