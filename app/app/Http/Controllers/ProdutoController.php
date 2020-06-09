@@ -1,22 +1,50 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Pagination\Paginator;
 use Illuminate\Http\Request;
 use App\Produto;
 use App\Marca;
 use Validator;
 
+
 class ProdutoController extends Controller
 {
+
+    protected function validarProduto($request){
+        $validator = Validator::make($request->all(), [
+            "descricao" => "required",
+            "preco"=> "required | numeric",
+            "cor" => "required",
+            "peso" => "required | numeric",
+            "marca_id" => "required | numeric",
+        ]);
+        return $validator;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $qtd = $request['qtd'] ?: 2;
+        $page = $request['page'] ?: 1;
+        $buscar = $request['buscar'];
+
+        Paginator::currentPageResolver(function () use ($page){
+            return $page;
+        });
+
+        if($buscar){
+            $produtos = Produto::where('descricao','=', $buscar)->paginate($qtd);
+        }else{
+            $produtos = Produto::paginate($qtd);
+
+        }
+        $produtos = $produtos->appends(Request::capture()->except('page'));
+        return view('produtos.index', compact('produtos'));
     }
 
     /**
@@ -38,7 +66,13 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = $this->validarProduto($request);
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->errors());
+        }
+        $dados = $request->all();
+        $produto = Produto::create($dados);
+        return redirect()->route('produtos.index');
     }
 
     /**
@@ -49,7 +83,9 @@ class ProdutoController extends Controller
      */
     public function show($id)
     {
-        //
+        $produto = Produto::find($id);
+
+        return view('produtos.show', compact('produto'));
     }
 
     /**
@@ -60,7 +96,10 @@ class ProdutoController extends Controller
      */
     public function edit($id)
     {
-        //
+        $produto = Produto::find($id);
+        $marcas = Marca::all();
+
+        return view('produtos.edit', compact('produto', 'marcas'));
     }
 
     /**
@@ -72,7 +111,17 @@ class ProdutoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = $this->validarProduto($request);
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->errors());
+        }
+
+        $produto = Produto::find($id);
+        $dados = $request->all();
+        $produto->update($dados);
+
+        return redirect()->route('produtos.index');
     }
 
     /**
@@ -83,6 +132,14 @@ class ProdutoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Produto::find($id)->delete();
+        return redirect()->route('produtos.index');
+    }
+
+    public function remover($id)
+    {
+        $produto = Produto::find($id);
+
+        return view('produtos.remove', compact('produto'));
     }
 }

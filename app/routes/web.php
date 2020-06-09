@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', 'ProdutoController@index')->name('produtos.index');
+
 Route::get('produtos/remove/{id}', 'ProdutoController@remover')->name('produtos.remove');
 Route::resource('produtos', 'ProdutoController');
 
