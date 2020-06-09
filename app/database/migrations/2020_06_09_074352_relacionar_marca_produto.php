@@ -27,6 +27,9 @@ class RelacionarMarcaProduto extends Migration
      */
     public function down()
     {
-        //
+        // Aqui é quando eu quero desfazer ou reverter
+        Schema::table('produtos',function (Blueprint $table){
+           $table->dropColumn('marca_id');
+        });
     }
 }
