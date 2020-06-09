@@ -13,6 +13,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'ProdutoController@index')->name('produtos.index');
+
+Route::get('produtos/remove/{id}', 'ProdutoController@remover')->name('produtos.remove');
+Route::resource('produtos', 'ProdutoController');
+
+Route::get('/marcas/produtos/{id}', 'MarcaController@produtos')->name('marcas.produtos');
+Route::get('/marcas/remove/{id}', 'MarcaController@remover')->name('marcas.remove');
+Route::resource('marcas', 'MarcaController');
+
+Route::get('/categorias/produtos/{id}', 'CategoriaController@produtos')->name('categorias.produtos');
+Route::get('/categorias/remove/{id}', 'CategoriaController@remover')->name('categorias.remove');
+Route::resource('categorias', 'CategoriaController');
