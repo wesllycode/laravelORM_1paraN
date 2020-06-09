@@ -10,6 +10,9 @@ class Produto extends Model
         "descricao", 'preco', "cor", "peso", "marca_id"
     ];
 
+    /*
+     * Aqui estamos dizendo no laravel essa relação entre marca e produto
+     */
     public function marca(){
         return $this->belongsTo('App\Marca','marca_id');
     }
