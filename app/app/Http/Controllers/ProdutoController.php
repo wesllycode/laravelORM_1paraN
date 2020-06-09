@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Produto;
+use App\Marca;
+use Validator;
 
 class ProdutoController extends Controller
 {
